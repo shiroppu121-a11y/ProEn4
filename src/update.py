@@ -3,16 +3,6 @@ import pygame
 from settings import (
     WIDTH,
     WORLD_WIDTH,
-    ENEMY_WIDTH,
-    ENEMY_HEIGHT,
-    ENEMY_SPEED,
-    ENEMY_LEFT_LIMIT,
-    ENEMY_RIGHT_LIMIT,
-    ITEM_WIDTH,
-    ITEM_HEIGHT,
-    ITEM_SPEED,
-    ITEM_LEFT_LIMIT,
-    ITEM_RIGHT_LIMIT,
     GOAL_X,
     GOAL_Y,
     GOAL_WIDTH,
@@ -20,23 +10,36 @@ from settings import (
 )
 
 
-def update_game(state, player, dt, best_time):
-    """ゲーム内の各オブジェクトと当たり判定を更新する。"""
-
+def update_game(
+    state,
+    player,
+    enemies,
+    items,
+    dt,
+    best_time
+):
     state["elapsed_time"] += dt
 
-    # プレイヤーの移動、ジャンプ、重力を更新
+    # プレイヤーを更新
     player.update()
 
-    # その他の処理を更新
+    # カメラを更新
     update_camera(state, player)
-    update_enemy(state)
-    update_item(state)
+
+    # 敵を更新
+    for enemy in enemies:
+        enemy.update()
+
+    # アイテムを更新
+    for item in items:
+        item.update()
 
     # 当たり判定
     best_time = check_collisions(
         state,
         player,
+        enemies,
+        items,
         best_time
     )
 
@@ -80,60 +83,16 @@ def update_camera(state, player):
     state["camera_x"] = int(state["camera_x"])
 
 
-def update_enemy(state):
-    """敵を左右に移動させる。"""
 
-    state["enemy_x"] += (
-        ENEMY_SPEED * state["enemy_direction"]
-    )
-
-    # 左端に到達したら右向きにする
-    if state["enemy_x"] < ENEMY_LEFT_LIMIT:
-        state["enemy_x"] = ENEMY_LEFT_LIMIT
-        state["enemy_direction"] = 1
-
-    # 右端に到達したら左向きにする
-    if state["enemy_x"] > ENEMY_RIGHT_LIMIT:
-        state["enemy_x"] = ENEMY_RIGHT_LIMIT
-        state["enemy_direction"] = -1
-
-
-def update_item(state):
-    """取得されていないアイテムを左右に移動させる。"""
-
-    if not state["item_available"]:
-        return
-
-    state["item_x"] += (
-        ITEM_SPEED * state["item_direction"]
-    )
-
-    # 左端に到達したら右向きにする
-    if state["item_x"] < ITEM_LEFT_LIMIT:
-        state["item_x"] = ITEM_LEFT_LIMIT
-        state["item_direction"] = 1
-
-    # 右端に到達したら左向きにする
-    if state["item_x"] > ITEM_RIGHT_LIMIT:
-        state["item_x"] = ITEM_RIGHT_LIMIT
-        state["item_direction"] = -1
-
-
-def check_collisions(state, player, best_time):
-    """プレイヤーと敵、アイテム、ゴールの衝突を調べる。"""
-
-    # Playerクラスから当たり判定を取得
+def check_collisions(
+    state,
+    player,
+    enemies,
+    items,
+    best_time
+):
     player_rect = player.get_rect()
 
-    # 敵の当たり判定
-    enemy_rect = pygame.Rect(
-        state["enemy_x"],
-        state["enemy_y"],
-        ENEMY_WIDTH,
-        ENEMY_HEIGHT
-    )
-
-    # ゴールの当たり判定
     goal_rect = pygame.Rect(
         GOAL_X,
         GOAL_Y,
@@ -141,35 +100,27 @@ def check_collisions(state, player, best_time):
         GOAL_HEIGHT
     )
 
-    # 敵との衝突
-    if player_rect.colliderect(enemy_rect):
-        state["game_over"] = True
-        print("ゲームオーバー")
+    # すべての敵との衝突を確認
+    for enemy in enemies:
+        if player_rect.colliderect(enemy.get_rect()):
+            state["game_over"] = True
+            print("ゲームオーバー")
 
-        return best_time
+            return best_time
 
-    # アイテムとの衝突
-    if state["item_available"]:
-        item_rect = pygame.Rect(
-            state["item_x"],
-            state["item_y"],
-            ITEM_WIDTH,
-            ITEM_HEIGHT
-        )
+    # すべてのアイテムとの衝突を確認
+    for item in items:
+        if not item.available:
+            continue
 
-        if player_rect.colliderect(item_rect):
-            state["item_available"] = False
-            player.speed_up(2)
-
-            print("アイテム獲得")
-            print("現在の移動速度:", player.speed)
+        if player_rect.colliderect(item.get_rect()):
+            item.collect(player)
 
     # ゴールとの衝突
     if player_rect.colliderect(goal_rect):
         state["goal_reached"] = True
         state["clear_time"] = state["elapsed_time"]
 
-        # ベストタイムを更新
         if (
             best_time is None
             or state["clear_time"] < best_time

@@ -5,17 +5,10 @@ from settings import (
     HEIGHT,
     WORLD_WIDTH,
     BLACK,
-    BLUE,
     GREEN,
     WHITE,
     RED,
     YELLOW,
-    PLAYER_WIDTH,
-    PLAYER_HEIGHT,
-    ENEMY_WIDTH,
-    ENEMY_HEIGHT,
-    ITEM_WIDTH,
-    ITEM_HEIGHT,
     GROUND_Y,
     GOAL_X,
     GOAL_Y,
@@ -28,28 +21,57 @@ def draw_screen(
     screen,
     state,
     player,
+    enemies,
+    items,
     font,
     small_font,
     best_time
 ):
     screen.fill(BLACK)
 
+    # タイトル画面
     if state["scene"] == "title":
-        draw_title(screen, font, small_font)
+        draw_title(
+            screen,
+            font,
+            small_font
+        )
         return
 
-    draw_world(screen,
-               state,
-                player
+    # ゲーム世界を描画
+    draw_world(
+        screen,
+        state,
+        player,
+        enemies,
+        items
     )
-    draw_status(screen, state, player, small_font)
 
+    # 速度とタイマーを描画
+    draw_status(
+        screen,
+        state,
+        player,
+        small_font
+    )
+
+    # ポーズ画面
     if state["paused"]:
-        draw_pause(screen, font, small_font)
+        draw_pause(
+            screen,
+            font,
+            small_font
+        )
 
+    # ゲームオーバー画面
     if state["game_over"]:
-        draw_game_over(screen, font, small_font)
+        draw_game_over(
+            screen,
+            font,
+            small_font
+        )
 
+    # ステージクリア画面
     if state["goal_reached"]:
         draw_clear(
             screen,
@@ -60,7 +82,13 @@ def draw_screen(
         )
 
 
-def draw_world(screen, state, player):
+def draw_world(
+    screen,
+    state,
+    player,
+    enemies,
+    items
+):
     camera_x = state["camera_x"]
     camera_y = state["camera_y"]
 
@@ -120,40 +148,36 @@ def draw_world(screen, state, player):
         ]
     )
 
-    # プレイヤー
+    # プレイヤーを描画
     player.draw(
         screen,
         camera_x,
         camera_y
-        )
-
-    # 敵
-    pygame.draw.rect(
-        screen,
-        RED,
-        (
-            state["enemy_x"] - camera_x,
-            state["enemy_y"] - camera_y,
-            ENEMY_WIDTH,
-            ENEMY_HEIGHT
-        )
     )
 
-    # アイテム
-    if state["item_available"]:
-        pygame.draw.rect(
+    # すべての敵を描画
+    for enemy in enemies:
+        enemy.draw(
             screen,
-            YELLOW,
-            (
-                state["item_x"] - camera_x,
-                state["item_y"] - camera_y,
-                ITEM_WIDTH,
-                ITEM_HEIGHT
-            )
+            camera_x,
+            camera_y
+        )
+
+    # すべてのアイテムを描画
+    for item in items:
+        item.draw(
+            screen,
+            camera_x,
+            camera_y
         )
 
 
-def draw_status(screen, state, player, small_font):
+def draw_status(
+    screen,
+    state,
+    player,
+    small_font
+):
     speed_text = small_font.render(
         f"Speed: {player.speed}",
         True,
@@ -174,10 +198,15 @@ def draw_overlay(screen, alpha=170):
     overlay = pygame.Surface((WIDTH, HEIGHT))
     overlay.set_alpha(alpha)
     overlay.fill(BLACK)
+
     screen.blit(overlay, (0, 0))
 
 
-def draw_title(screen, font, small_font):
+def draw_title(
+    screen,
+    font,
+    small_font
+):
     title_text = font.render(
         "2D ACTION GAME",
         True,
@@ -196,29 +225,37 @@ def draw_title(screen, font, small_font):
         WHITE
     )
 
-    screen.blit(
-        title_text,
-        title_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2 - 80)
+    title_rect = title_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 - 80
         )
     )
 
-    screen.blit(
-        start_text,
-        start_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2 + 20)
+    start_rect = start_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 + 20
         )
     )
 
-    screen.blit(
-        operation_text,
-        operation_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2 + 70)
+    operation_rect = operation_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 + 70
         )
     )
 
+    screen.blit(title_text, title_rect)
+    screen.blit(start_text, start_rect)
+    screen.blit(operation_text, operation_rect)
 
-def draw_pause(screen, font, small_font):
+
+def draw_pause(
+    screen,
+    font,
+    small_font
+):
     draw_overlay(screen, 150)
 
     pause_text = font.render(
@@ -233,22 +270,29 @@ def draw_pause(screen, font, small_font):
         WHITE
     )
 
-    screen.blit(
-        pause_text,
-        pause_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2 - 40)
+    pause_rect = pause_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 - 40
         )
     )
 
-    screen.blit(
-        guide_text,
-        guide_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2 + 30)
+    guide_rect = guide_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 + 30
         )
     )
 
+    screen.blit(pause_text, pause_rect)
+    screen.blit(guide_text, guide_rect)
 
-def draw_game_over(screen, font, small_font):
+
+def draw_game_over(
+    screen,
+    font,
+    small_font
+):
     draw_overlay(screen)
 
     game_over_text = font.render(
@@ -263,19 +307,22 @@ def draw_game_over(screen, font, small_font):
         WHITE
     )
 
-    screen.blit(
-        game_over_text,
-        game_over_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2 - 40)
+    game_over_rect = game_over_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 - 40
         )
     )
 
-    screen.blit(
-        guide_text,
-        guide_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2 + 30)
+    guide_rect = guide_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 + 30
         )
     )
+
+    screen.blit(game_over_text, game_over_rect)
+    screen.blit(guide_text, guide_rect)
 
 
 def draw_clear(
@@ -311,30 +358,35 @@ def draw_clear(
         WHITE
     )
 
-    screen.blit(
-        clear_text,
-        clear_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2 - 90)
+    clear_rect = clear_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 - 90
         )
     )
 
-    screen.blit(
-        clear_time_text,
-        clear_time_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2)
+    clear_time_rect = clear_time_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2
         )
     )
 
-    screen.blit(
-        best_time_text,
-        best_time_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2 + 40)
+    best_time_rect = best_time_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 + 40
         )
     )
 
-    screen.blit(
-        guide_text,
-        guide_text.get_rect(
-            center=(WIDTH // 2, HEIGHT // 2 + 100)
+    guide_rect = guide_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 + 100
         )
     )
+
+    screen.blit(clear_text, clear_rect)
+    screen.blit(clear_time_text, clear_time_rect)
+    screen.blit(best_time_text, best_time_rect)
+    screen.blit(guide_text, guide_rect)
