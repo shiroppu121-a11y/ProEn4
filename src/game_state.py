@@ -1,20 +1,6 @@
-from settings import PLAYER_INITIAL_SPEED
-
-
 def create_game_state(scene="title"):
     return {
         "scene": scene,
-
-        # 敵
-        "enemy_x": 900,
-        "enemy_y": 450,
-        "enemy_direction": 1,
-
-        # アイテム
-        "item_x": 600,
-        "item_y": 450,
-        "item_direction": 1,
-        "item_available": True,
 
         # カメラ
         "camera_x": 0,
