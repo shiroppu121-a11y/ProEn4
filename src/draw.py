@@ -241,9 +241,17 @@ def draw_status(
     screen.blit(speed_text, (20, 20))
     screen.blit(timer_text, (20, 55))
 
+    item_name = {
+        "speed":"Speed Up",
+        "invincible":"Invincible",
+        "throw":"Throw"
+    }
+
+
     if player.holding_item:
+
         item_text = small_font.render(
-            "ITEM : " + player.holding_item,
+            "ITEM : " + item_name[player.holding_item],
             True,
             YELLOW
         )

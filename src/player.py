@@ -30,19 +30,17 @@ class Player:
 
         self.speed = PLAYER_INITIAL_SPEED
         self.holding_item = None
-        self.invincible = False
 
         self.velocity_y = 0
         self.on_ground = False
 
-        # 所持アイテム
-        self.item = None
-
         # 無敵時間
         self.invincible_time = 0
 
+        self.bullet = None
 
-    def update(self, game_map):
+
+    def update(self, game_map, enemies):
 
         keys = pygame.key.get_pressed()
 
@@ -75,6 +73,15 @@ class Player:
         self.apply_gravity(game_map)
 
         self.keep_inside_world()
+
+        if self.bullet:
+
+            self.bullet.update(
+                enemies
+            )
+
+            if not self.bullet.active:
+                self.bullet = None
 
 
 
@@ -127,6 +134,47 @@ class Player:
                     self.velocity_y = 0
 
 
+    def use_item(self, enemies):
+
+        if self.holding_item is None:
+            return
+
+
+        item = self.holding_item
+
+
+        # スピードアップ
+        if item == "speed":
+
+            self.speed += 3
+
+            print("スピードアップ")
+
+
+        # 無敵5秒
+        elif item == "invincible":
+
+            self.invincible_time = 300
+
+            print("5秒間無敵")
+
+
+        # 投擲
+        elif item == "throw":
+
+            from bullet import Bullet
+
+            bullet = Bullet(
+                self.x + self.width,
+                self.y + self.height // 2
+            )
+
+            self.bullet = bullet
+
+            print("投擲")
+
+
+        self.holding_item = None
 
     def check_horizontal_collision(
             self,
@@ -202,15 +250,13 @@ class Player:
             )
         )
 
-        
+        if self.bullet:
 
-        screen.blit(
-            self.image,
-            (
-                self.x - camera_x,
-                self.y - camera_y
+            self.bullet.draw(
+                screen,
+                camera_x,
+                camera_y
             )
-        )
 
     def use_item(
         self,
@@ -239,13 +285,10 @@ class Player:
         # 投擲
         elif item == "throw":
 
-            count = random.randint(1,3)
+            if enemies:
+                enemies.pop(0)
 
-            print(
-                "投擲",
-                count,
-                "発"
-            )
+            print("敵を投擲で倒した")
 
 
         # 爆発

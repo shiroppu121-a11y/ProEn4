@@ -12,7 +12,6 @@ ITEM_TYPES = [
     "speed",
     "invincible",
     "throw",
-    "bomb"
 ]
 
 
@@ -63,33 +62,6 @@ class Item:
         )
 
         self.available = False
-
-
-    def use(self, player, enemies):
-        if self.type == "speed":
-            player.speed += 3
-            print("スピードアップ")
-
-        elif self.type == "invincible":
-            player.invincible_time = 300
-            print("無敵状態")
-
-        elif self.type == "throw":
-            print("投擲")
-
-            # とりあえず敵1体消す
-            if enemies:
-                enemies.pop(0)
-
-        elif self.type == "bomb":
-            print("爆発")
-
-            px = player.x
-
-            for enemy in enemies[:]:
-                if abs(enemy.x - px) < 150:
-                    enemies.remove(enemy)
-
 
 
 

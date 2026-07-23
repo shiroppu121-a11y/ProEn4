@@ -22,11 +22,11 @@ def update_game(
 
     if player.invincible_time > 0:
         player.invincible_time -= 1
-    
+
     state["elapsed_time"] += dt
 
     # プレイヤーを更新
-    player.update(game_map)
+    player.update(game_map, enemies)
 
     check_stage_collision(
         player,

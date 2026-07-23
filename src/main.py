@@ -46,7 +46,7 @@ def create_items():
     return [
         Item(
             x=800,
-            y=430
+            y=330
         ),
 
         Item(
@@ -55,8 +55,8 @@ def create_items():
         ),
 
         Item(
-            x=2000,
-            y=430
+            x=1600,
+            y=330
         ),
     ]
 
@@ -165,15 +165,11 @@ while running:
                 # Eキーでアイテム使用
                 if event.key == pygame.K_e:
 
-                    if player.item is not None:
+                    if player.holding_item is not None:
 
-                        player.item.use(
-                            player,
+                        player.use_item(
                             enemies
                         )
-
-                        # 使用後消去
-                        player.item = None
 
                         print("アイテム使用")
 
