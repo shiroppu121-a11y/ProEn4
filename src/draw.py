@@ -339,10 +339,11 @@ def draw_pause(
     )
 
     guide_text = small_font.render(
-        "Press ESC to resume",
-        True,
-        WHITE
+    "ESC: Resume    T: Title",
+    True,
+    WHITE
     )
+
 
     pause_rect = pause_text.get_rect(
         center=(

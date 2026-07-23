@@ -11,7 +11,7 @@ class Map:
         self.blocks = []
 
         # 地面
-        for x in range(0,2400,50):
+        for x in range(0,4000,50):
             self.blocks.append(
                 (x,500)
             )
@@ -25,6 +25,18 @@ class Map:
         for x in range(1300, 1500, self.block_size):
             self.blocks.append((x, 400))
 
+        # 足場④：ウサギの前
+        for x in range(1700, 1950, self.block_size):
+            self.blocks.append((x, 400))
+
+
+        # 足場⑤：終盤
+        for x in range(2300, 2600, self.block_size):
+            self.blocks.append((x, 450))
+
+        # 足場⑤：終盤
+        for x in range(2800, 3000, self.block_size):
+            self.blocks.append((x, 380))
 
         self.block_image = load_image(
             "ground.png"

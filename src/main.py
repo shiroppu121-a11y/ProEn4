@@ -17,7 +17,7 @@ def create_enemies():
 
         Enemy(
             x=550,
-            y=450,
+            y=470,
             left_limit=500,
             right_limit=650,
             enemy_type="slime"
@@ -39,6 +39,38 @@ def create_enemies():
             enemy_type="rabbit"
         ),
 
+        Enemy(
+            x=2000,
+            y=280,
+            left_limit=2150,
+            right_limit=2250,
+            enemy_type="bat"
+        ),
+
+        Enemy(
+            x=2550,
+            y=450,
+            left_limit=2500,
+            right_limit=2600,
+            enemy_type="rabbit"
+        ),
+
+        Enemy(
+            x=3050,
+            y=450,
+            left_limit=2950,
+            right_limit=3300,
+            enemy_type="slime"
+        ),
+
+        Enemy(
+            x=3350,
+            y=450,
+            left_limit=3200,
+            right_limit=3500,
+            enemy_type="slime"
+        )
+
     ]
 def create_items():
     """アイテム出現地点"""
@@ -50,8 +82,13 @@ def create_items():
         ),
 
         Item(
-            x=1500,
+            x=1800,
             y=270
+        ),
+
+        Item(
+            x=2500,
+            y=250
         )
     ]
 
@@ -145,6 +182,17 @@ while running:
                         and not state["goal_reached"]
                     ):
                         state["paused"] = not state["paused"]
+
+                # ポーズ中にTキーでタイトル画面へ戻る
+                if (event.key == pygame.K_t and state["paused"]):
+
+                    if state["paused"]:
+
+                        state, player, enemies, items, game_map = reset_game(
+                            "title"
+                        )
+
+                        print("タイトル画面に戻る")
 
                 # Rキーでリスタート
                 if event.key == pygame.K_r:
