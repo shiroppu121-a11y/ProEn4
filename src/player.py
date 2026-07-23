@@ -147,15 +147,13 @@ class Player:
         if item == "speed":
 
             self.speed += 3
-
             print("スピードアップ")
 
 
         # 無敵5秒
         elif item == "invincible":
 
-            self.invincible_time = 300
-
+            self.invincible_time = 5
             print("5秒間無敵")
 
 
@@ -164,12 +162,10 @@ class Player:
 
             from bullet import Bullet
 
-            bullet = Bullet(
+            self.bullet = Bullet(
                 self.x + self.width,
                 self.y + self.height // 2
             )
-
-            self.bullet = bullet
 
             print("投擲")
 
@@ -257,53 +253,3 @@ class Player:
                 camera_x,
                 camera_y
             )
-
-    def use_item(
-        self,
-        enemies
-    ):
-
-        if self.holding_item is None:
-            return
-
-
-        item = self.holding_item
-
-
-        # スピードアップ
-        if item == "speed":
-
-            self.speed += 3
-
-
-        # 無敵
-        elif item == "invincible":
-
-            self.invincible = True
-
-
-        # 投擲
-        elif item == "throw":
-
-            if enemies:
-                enemies.pop(0)
-
-            print("敵を投擲で倒した")
-
-
-        # 爆発
-        elif item == "bomb":
-
-            attack_range = 150
-
-            for enemy in enemies:
-
-                distance = abs(
-                    enemy.x - self.x
-                )
-
-                if distance < attack_range:
-                    enemies.remove(enemy)
-
-
-        self.holding_item = None

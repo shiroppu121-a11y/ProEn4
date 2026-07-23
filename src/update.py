@@ -21,7 +21,8 @@ def update_game(
 ):
 
     if player.invincible_time > 0:
-        player.invincible_time -= 1
+        player.invincible_time -= dt
+
 
     state["elapsed_time"] += dt
 

@@ -49,20 +49,14 @@ class Item:
 
     def collect(self, player):
 
-        # すでに持っていたら取得不可
         if player.holding_item:
             return
 
-
         player.holding_item = self.type
 
-        print(
-            "取得:",
-            self.type
-        )
+        print("取得:", self.type)
 
         self.available = False
-
 
 
     def draw(

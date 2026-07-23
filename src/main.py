@@ -165,11 +165,12 @@ while running:
                 # Eキーでアイテム使用
                 if event.key == pygame.K_e:
 
+                    print("E押された")
+                    print("所持:", player.holding_item)
+
                     if player.holding_item is not None:
 
-                        player.use_item(
-                            enemies
-                        )
+                        player.use_item(enemies)
 
                         print("アイテム使用")
 
