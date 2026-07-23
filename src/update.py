@@ -107,6 +107,8 @@ def check_collisions(
             state["game_over"] = True
             print("ゲームオーバー")
 
+            enemy.update()
+
             return best_time
 
     # すべてのアイテムとの衝突を確認

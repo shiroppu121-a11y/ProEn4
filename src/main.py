@@ -11,22 +11,34 @@ from stage import Stage
 
 
 def create_enemies():
+
     return [
+
         Enemy(
-            x=900,
+            x=600,
             y=450,
-            left_limit=850,
-            right_limit=1150
+            left_limit=550,
+            right_limit=750,
+            enemy_type="slime"
         ),
+
         Enemy(
-            x=1500,
-            y=450,
-            left_limit=1400,
-            right_limit=1700
+            x=700,
+            y=300,
+            left_limit=650,
+            right_limit=750,
+            enemy_type="bat"
         ),
+
+        Enemy(
+            x=750,
+            y=450,
+            left_limit=700,
+            right_limit=780,
+            enemy_type="rabbit"
+        ),
+
     ]
-
-
 def create_items():
     return [
         Item(

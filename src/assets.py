@@ -3,9 +3,7 @@ import pygame
 
 
 BASE_DIR = os.path.dirname(
-    os.path.dirname(
-        os.path.abspath(__file__)
-    )
+    os.path.abspath(__file__)
 )
 
 
@@ -22,6 +20,8 @@ def load_image(filename):
         filename
     )
 
-    return pygame.image.load(
+    image = pygame.image.load(
         path
     ).convert_alpha()
+
+    return image
