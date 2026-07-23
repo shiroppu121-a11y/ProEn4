@@ -15,8 +15,14 @@ class Player:
     def __init__(self):
         self.x = 400
         self.y = 300
-        self.width = PLAYER_WIDTH
-        self.height = PLAYER_HEIGHT
+
+        self.image = pygame.image.load(
+            "assets/player/player.png"
+        ).convert_alpha()
+
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
         self.speed = PLAYER_INITIAL_SPEED
 
         self.velocity_y = 0
@@ -76,17 +82,11 @@ class Player:
         self.speed += amount
 
     def draw(self, screen, camera_x, camera_y):
-        """プレイヤーを画面に描画する。"""
 
-        blue = (0, 200, 255)
-
-        pygame.draw.rect(
-            screen,
-            blue,
-            (
-                self.x - camera_x,
-                self.y - camera_y,
-                self.width,
-                self.height
-            )
+        screen.blit(
+        self.image,
+        (
+            self.x - camera_x,
+            self.y - camera_y
         )
+    )
