@@ -153,7 +153,7 @@ while running:
                         state["game_over"]
                         or state["goal_reached"]
                     ):
-                        state, player, enemies, items, stage = reset_game("title")
+                        state, player, enemies, items = reset_game("title")
 
                         print("タイトル画面に戻る")
 
