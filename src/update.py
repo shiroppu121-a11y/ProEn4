@@ -15,6 +15,7 @@ def update_game(
     player,
     enemies,
     items,
+    game_map,
     dt,
     best_time
 ):
@@ -22,6 +23,11 @@ def update_game(
 
     # プレイヤーを更新
     player.update()
+
+    check_stage_collision(
+        player,
+        game_map
+    )
 
     # カメラを更新
     update_camera(state, player)
@@ -82,7 +88,26 @@ def update_camera(state, player):
 
     state["camera_x"] = int(state["camera_x"])
 
+def check_stage_collision(player, game_map):
 
+    player_rect = player.get_rect()
+
+
+    for block in game_map.blocks:
+
+        if player_rect.colliderect(block):
+
+            # 上から乗る
+            if player.velocity_y > 0:
+
+                player.y = (
+                    block.y
+                    -
+                    player.height
+                )
+
+                player.velocity_y = 0
+                player.on_ground=True
 
 def check_collisions(
     state,

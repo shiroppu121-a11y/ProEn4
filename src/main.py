@@ -172,6 +172,7 @@ while running:
             player,
             enemies,
             items,
+            game_map,
             dt,
             best_time
         )
