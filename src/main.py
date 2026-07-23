@@ -7,9 +7,12 @@ from draw import draw_screen
 from player import Player
 from enemy import Enemy
 from item import Item
+from records import load_clear_times, add_clear_time
 
 
 def create_enemies():
+    """ステージに配置する敵を作成する。"""
+
     return [
         Enemy(
             x=900,
@@ -27,6 +30,8 @@ def create_enemies():
 
 
 def create_items():
+    """ステージに配置するアイテムを作成する。"""
+
     return [
         Item(
             x=600,
@@ -40,7 +45,7 @@ def create_items():
 
 
 def reset_game(scene):
-    """ゲーム内のオブジェクトをまとめて初期化する。"""
+    """ゲーム内の状態とオブジェクトを初期化する。"""
 
     new_state = create_game_state(scene)
     new_player = Player()
@@ -65,9 +70,17 @@ clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 80)
 small_font = pygame.font.SysFont(None, 36)
 
+# 保存済みのクリアタイムを読み込む
+clear_times = load_clear_times()
+
+# ベストタイムを設定する
+if clear_times:
+    best_time = clear_times[0]
+else:
+    best_time = None
+
 state, player, enemies, items = reset_game("title")
 
-best_time = None
 running = True
 
 
@@ -82,6 +95,7 @@ while running:
         if event.type == pygame.KEYDOWN:
             # タイトル画面
             if state["scene"] == "title":
+                # Enterキーでゲーム開始
                 if event.key == pygame.K_RETURN:
                     state, player, enemies, items = reset_game(
                         "playing"
@@ -89,9 +103,24 @@ while running:
 
                     print("ゲーム開始")
 
+                # Hキーで記録画面を開く
+                if event.key == pygame.K_h:
+                    state["scene"] = "records"
+
+            # 記録画面
+            elif state["scene"] == "records":
+                # EscキーまたはTキーでタイトルへ戻る
+                if (
+                    event.key == pygame.K_ESCAPE
+                    or event.key == pygame.K_t
+                ):
+                    state, player, enemies, items = reset_game(
+                        "title"
+                    )
+
             # ゲーム画面
             elif state["scene"] == "playing":
-                # ポーズ切り替え
+                # Escキーでポーズ切り替え
                 if event.key == pygame.K_ESCAPE:
                     if (
                         not state["game_over"]
@@ -99,7 +128,7 @@ while running:
                     ):
                         state["paused"] = not state["paused"]
 
-                # リスタート
+                # Rキーでリスタート
                 if event.key == pygame.K_r:
                     if (
                         state["game_over"]
@@ -111,7 +140,7 @@ while running:
 
                         print("リスタート")
 
-                # タイトルへ戻る
+                # Tキーでタイトルへ戻る
                 if event.key == pygame.K_t:
                     if (
                         state["game_over"]
@@ -130,6 +159,9 @@ while running:
         and not state["game_over"]
         and not state["goal_reached"]
     ):
+        # 更新前のゴール状態
+        goal_was_reached = state["goal_reached"]
+
         best_time = update_game(
             state,
             player,
@@ -138,6 +170,25 @@ while running:
             dt,
             best_time
         )
+
+        # このフレームで初めてゴールした場合
+        if (
+            not goal_was_reached
+            and state["goal_reached"]
+            and state["clear_time"] is not None
+        ):
+            clear_times = add_clear_time(
+                clear_times,
+                state["clear_time"]
+            )
+
+            # 最速記録をベストタイムにする
+            best_time = clear_times[0]
+
+            print(
+                "クリアタイムを保存しました:",
+                state["clear_time"]
+            )
 
     # 描画
     draw_screen(
@@ -148,7 +199,8 @@ while running:
         items,
         font,
         small_font,
-        best_time
+        best_time,
+        clear_times
     )
 
     pygame.display.flip()
