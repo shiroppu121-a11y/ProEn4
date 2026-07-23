@@ -28,7 +28,6 @@ def draw_screen(
     player,
     enemies,
     items,
-    stage,
     font,
     small_font,
     best_time,
@@ -62,8 +61,7 @@ def draw_screen(
         state,
         player,
         enemies,
-        items,
-        stage
+        items
     )
 
     draw_status(
@@ -101,8 +99,7 @@ def draw_world(
     state,
     player,
     enemies,
-    items,
-    stage
+    items
 ):
     camera_x = state["camera_x"]
     camera_y = state["camera_y"]
@@ -127,13 +124,7 @@ def draw_world(
             1
         )
 
-    # 地面
-    # ステージを描画
-    stage.draw(
-        screen,
-        camera_x,
-        camera_y
-    )
+    
 
     # ゴールのポール
     pygame.draw.rect(

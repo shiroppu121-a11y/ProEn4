@@ -15,7 +15,6 @@ def update_game(
     player,
     enemies,
     items,
-    stage,
     dt,
     best_time
 ):

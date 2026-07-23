@@ -14,14 +14,14 @@ ASSETS_DIR = os.path.join(
 
 
 def load_image(filename):
-
     path = os.path.join(
         ASSETS_DIR,
         filename
     )
 
-    image = pygame.image.load(
-        path
-    ).convert_alpha()
+    image = pygame.image.load(path)
+
+    if pygame.display.get_surface():
+        image = image.convert_alpha()
 
     return image
