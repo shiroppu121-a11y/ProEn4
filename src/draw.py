@@ -251,7 +251,7 @@ def draw_title(
     best_time
 ):
     title_text = font.render(
-        "2D ACTION GAME",
+        "Girl's Adventure",
         True,
         WHITE
     )
