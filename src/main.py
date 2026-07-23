@@ -8,7 +8,7 @@ from player import Player
 from enemy import Enemy
 from item import Item
 from records import load_clear_times, add_clear_time
-
+from map import Map
 
 def create_enemies():
     """ステージに配置する敵を作成する。"""
@@ -56,19 +56,21 @@ def create_items():
 
 
 def reset_game(scene):
-    """ゲーム内の状態とオブジェクトを初期化する。"""
 
     new_state = create_game_state(scene)
     new_player = Player()
     new_enemies = create_enemies()
     new_items = create_items()
+    new_map = Map()
 
     return (
         new_state,
         new_player,
         new_enemies,
         new_items,
+        new_map
     )
+   
 
 
 pygame.init()
@@ -90,7 +92,7 @@ if clear_times:
 else:
     best_time = None
 
-state, player, enemies, items = reset_game("title")
+state, player, enemies, items, game_map = reset_game("title")
 
 running = True
 
@@ -108,7 +110,7 @@ while running:
             if state["scene"] == "title":
                 # Enterキーでゲーム開始
                 if event.key == pygame.K_RETURN:
-                    state, player, enemies, items = reset_game("playing")
+                    state, player, enemies, items, game_map = reset_game("playing")
 
                     print("ゲーム開始")
 
@@ -123,9 +125,7 @@ while running:
                     event.key == pygame.K_ESCAPE
                     or event.key == pygame.K_t
                 ):
-                    state, player, enemies, items = reset_game(
-                        "title"
-                    )
+                    state, player, enemies, items, game_map = reset_game("title")
 
             # ゲーム画面
             elif state["scene"] == "playing":
@@ -143,7 +143,7 @@ while running:
                         state["game_over"]
                         or state["goal_reached"]
                     ):
-                        state, player, enemies, items = reset_game("playing")
+                        state, player, enemies, items, game_map = reset_game("playing")
 
                         print("リスタート")
 
@@ -153,7 +153,7 @@ while running:
                         state["game_over"]
                         or state["goal_reached"]
                     ):
-                        state, player, enemies, items = reset_game("title")
+                        state, player, enemies, items, game_map = reset_game("title")
 
                         print("タイトル画面に戻る")
 
@@ -175,7 +175,6 @@ while running:
             dt,
             best_time
         )
-
         # このフレームで初めてゴールした場合
         if (
             not goal_was_reached
@@ -202,6 +201,7 @@ while running:
         player,
         enemies,
         items,
+        game_map,
         font,
         small_font,
         best_time,

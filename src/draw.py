@@ -1,5 +1,6 @@
 import pygame
 from assets import load_image
+from map import Map
 
 from settings import (
     WIDTH,
@@ -28,6 +29,7 @@ def draw_screen(
     player,
     enemies,
     items,
+    game_map,
     font,
     small_font,
     best_time,
@@ -61,7 +63,8 @@ def draw_screen(
         state,
         player,
         enemies,
-        items
+        items,
+        game_map
     )
 
     draw_status(
@@ -99,8 +102,10 @@ def draw_world(
     state,
     player,
     enemies,
-    items
+    items,
+    game_map
 ):
+
     camera_x = state["camera_x"]
     camera_y = state["camera_y"]
 
@@ -124,7 +129,6 @@ def draw_world(
             1
         )
 
-    
 
     # ゴールのポール
     pygame.draw.rect(
@@ -156,6 +160,12 @@ def draw_world(
                 GOAL_Y + 50 - camera_y
             )
         ]
+    )
+
+    game_map.draw(
+        screen,
+        camera_x,
+        camera_y
     )
 
     # プレイヤーを描画
