@@ -31,7 +31,8 @@ def draw_screen(
     stage,
     font,
     small_font,
-    best_time
+    best_time,
+    clear_times
 ):
     screen.fill(BLACK)
 
@@ -40,7 +41,18 @@ def draw_screen(
         draw_title(
             screen,
             font,
-            small_font
+            small_font,
+            best_time
+        )
+        return
+
+    # クリアタイム一覧画面
+    if state["scene"] == "records":
+        draw_records(
+            screen,
+            font,
+            small_font,
+            clear_times
         )
         return
 
@@ -54,7 +66,6 @@ def draw_screen(
         stage
     )
 
-    # 速度とタイマーを描画
     draw_status(
         screen,
         state,
@@ -62,7 +73,6 @@ def draw_screen(
         small_font
     )
 
-    # ポーズ画面
     if state["paused"]:
         draw_pause(
             screen,
@@ -70,7 +80,6 @@ def draw_screen(
             small_font
         )
 
-    # ゲームオーバー画面
     if state["game_over"]:
         draw_game_over(
             screen,
@@ -78,7 +87,6 @@ def draw_screen(
             small_font
         )
 
-    # ステージクリア画面
     if state["goal_reached"]:
         draw_clear(
             screen,
@@ -87,7 +95,6 @@ def draw_screen(
             small_font,
             best_time
         )
-
 
 def draw_world(
     screen,
@@ -245,7 +252,8 @@ def draw_overlay(screen, alpha=170):
 def draw_title(
     screen,
     font,
-    small_font
+    small_font,
+    best_time
 ):
     title_text = font.render(
         "2D ACTION GAME",
@@ -254,9 +262,15 @@ def draw_title(
     )
 
     start_text = small_font.render(
-        "Press ENTER to start",
+        "ENTER: Start",
         True,
         WHITE
+    )
+
+    records_text = small_font.render(
+        "H: Clear Time Records",
+        True,
+        YELLOW
     )
 
     operation_text = small_font.render(
@@ -268,27 +282,52 @@ def draw_title(
     title_rect = title_text.get_rect(
         center=(
             WIDTH // 2,
-            HEIGHT // 2 - 80
+            HEIGHT // 2 - 120
         )
     )
 
     start_rect = start_text.get_rect(
         center=(
             WIDTH // 2,
-            HEIGHT // 2 + 20
+            HEIGHT // 2 - 20
+        )
+    )
+
+    records_rect = records_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT // 2 + 30
         )
     )
 
     operation_rect = operation_text.get_rect(
         center=(
             WIDTH // 2,
-            HEIGHT // 2 + 70
+            HEIGHT // 2 + 90
         )
     )
 
     screen.blit(title_text, title_rect)
     screen.blit(start_text, start_rect)
+    screen.blit(records_text, records_rect)
     screen.blit(operation_text, operation_rect)
+
+    # ベストタイムがある場合だけ表示
+    if best_time is not None:
+        best_text = small_font.render(
+            f"Best Time: {best_time:.2f} sec",
+            True,
+            YELLOW
+        )
+
+        best_rect = best_text.get_rect(
+            center=(
+                WIDTH // 2,
+                HEIGHT // 2 + 140
+            )
+        )
+
+        screen.blit(best_text, best_rect)
 
 
 def draw_pause(
@@ -430,3 +469,92 @@ def draw_clear(
     screen.blit(clear_time_text, clear_time_rect)
     screen.blit(best_time_text, best_time_rect)
     screen.blit(guide_text, guide_rect)
+
+def draw_records(
+    screen,
+    font,
+    small_font,
+    clear_times
+):
+    """保存済みのクリアタイム一覧を描画する。"""
+
+    title_text = font.render(
+        "CLEAR TIME RECORDS",
+        True,
+        YELLOW
+    )
+
+    title_rect = title_text.get_rect(
+        center=(
+            WIDTH // 2,
+            70
+        )
+    )
+
+    screen.blit(title_text, title_rect)
+
+    # 記録がない場合
+    if not clear_times:
+        no_record_text = small_font.render(
+            "No clear records yet",
+            True,
+            WHITE
+        )
+
+        no_record_rect = no_record_text.get_rect(
+            center=(
+                WIDTH // 2,
+                HEIGHT // 2
+            )
+        )
+
+        screen.blit(
+            no_record_text,
+            no_record_rect
+        )
+
+    # 記録がある場合
+    else:
+        # 画面に収めるため上位10件を表示
+        display_times = clear_times[:10]
+
+        for index, clear_time in enumerate(display_times):
+            rank = index + 1
+
+            if rank == 1:
+                color = YELLOW
+            else:
+                color = WHITE
+
+            record_text = small_font.render(
+                f"{rank:2}.  {clear_time:.2f} sec",
+                True,
+                color
+            )
+
+            record_rect = record_text.get_rect(
+                center=(
+                    WIDTH // 2,
+                    145 + index * 36
+                )
+            )
+
+            screen.blit(
+                record_text,
+                record_rect
+            )
+
+    back_text = small_font.render(
+        "ESC / T: Back to Title",
+        True,
+        WHITE
+    )
+
+    back_rect = back_text.get_rect(
+        center=(
+            WIDTH // 2,
+            HEIGHT - 40
+        )
+    )
+
+    screen.blit(back_text, back_rect)
