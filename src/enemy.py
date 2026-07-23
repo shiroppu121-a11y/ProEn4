@@ -50,7 +50,7 @@ class Enemy:
 
             self.image = pygame.transform.scale(
                 self.image,
-                (100, 70)
+                (50, 40)
             )
 
         elif self.enemy_type == "slime":
@@ -61,7 +61,7 @@ class Enemy:
 
             self.image = pygame.transform.scale(
                 self.image,
-                (70, 70)
+                (50, 30)
             )
 
         elif self.enemy_type == "rabbit":
@@ -72,7 +72,7 @@ class Enemy:
 
             self.image = pygame.transform.scale(
                 self.image,
-                (80, 100)
+                (50, 60)
             )
 
 
@@ -133,7 +133,7 @@ class Enemy:
     def update_rabbit(self):
 
         # 重力
-        self.velocity_y += 0.8
+        self.velocity_y += 0.5
 
         self.y += self.velocity_y
 
@@ -165,7 +165,7 @@ class Enemy:
         # 着地したらジャンプ
         if self.on_ground:
 
-            self.velocity_y = -12
+            self.velocity_y = -18
 
             self.on_ground = False
 

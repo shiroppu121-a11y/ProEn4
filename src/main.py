@@ -24,18 +24,18 @@ def create_enemies():
         ),
 
         Enemy(
-            x=700,
+            x=1200,
             y=300,
-            left_limit=650,
-            right_limit=750,
+            left_limit=1150,
+            right_limit=1250,
             enemy_type="bat"
         ),
 
         Enemy(
-            x=750,
+            x=1850,
             y=450,
-            left_limit=700,
-            right_limit=780,
+            left_limit=1800,
+            right_limit=1900,
             enemy_type="rabbit"
         ),
 
