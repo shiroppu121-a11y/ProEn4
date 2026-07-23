@@ -3,10 +3,11 @@ import pygame
 from settings import WIDTH, HEIGHT, FPS
 from game_state import create_game_state
 from update import update_game
-from draw import draw_screen
+import draw
 from player import Player
 from enemy import Enemy
 from item import Item
+from stage import Stage
 
 
 def create_enemies():
@@ -40,18 +41,19 @@ def create_items():
 
 
 def reset_game(scene):
-    """ゲーム内のオブジェクトをまとめて初期化する。"""
 
     new_state = create_game_state(scene)
     new_player = Player()
     new_enemies = create_enemies()
     new_items = create_items()
+    new_stage = Stage()
 
     return (
         new_state,
         new_player,
         new_enemies,
-        new_items
+        new_items,
+        new_stage
     )
 
 
@@ -65,7 +67,7 @@ clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 80)
 small_font = pygame.font.SysFont(None, 36)
 
-state, player, enemies, items = reset_game("title")
+state, player, enemies, items, stage = reset_game("title")
 
 best_time = None
 running = True
@@ -83,9 +85,7 @@ while running:
             # タイトル画面
             if state["scene"] == "title":
                 if event.key == pygame.K_RETURN:
-                    state, player, enemies, items = reset_game(
-                        "playing"
-                    )
+                    state, player, enemies, items, stage = reset_game("playing")
 
                     print("ゲーム開始")
 
@@ -105,9 +105,7 @@ while running:
                         state["game_over"]
                         or state["goal_reached"]
                     ):
-                        state, player, enemies, items = reset_game(
-                            "playing"
-                        )
+                        state, player, enemies, items, stage = reset_game("playing")
 
                         print("リスタート")
 
@@ -117,9 +115,7 @@ while running:
                         state["game_over"]
                         or state["goal_reached"]
                     ):
-                        state, player, enemies, items = reset_game(
-                            "title"
-                        )
+                        state, player, enemies, items, stage = reset_game("title")
 
                         print("タイトル画面に戻る")
 
@@ -135,17 +131,19 @@ while running:
             player,
             enemies,
             items,
+            stage,
             dt,
             best_time
         )
 
     # 描画
-    draw_screen(
+    draw.draw_screen(
         screen,
         state,
         player,
         enemies,
         items,
+        stage,
         font,
         small_font,
         best_time

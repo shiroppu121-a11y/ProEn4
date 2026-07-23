@@ -1,8 +1,6 @@
 import pygame
 
 from settings import (
-    PLAYER_WIDTH,
-    PLAYER_HEIGHT,
     PLAYER_INITIAL_SPEED,
     GRAVITY,
     JUMP_POWER,
