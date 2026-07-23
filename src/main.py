@@ -62,7 +62,6 @@ def reset_game(scene):
     new_player = Player()
     new_enemies = create_enemies()
     new_items = create_items()
-    new_stage = Stage()
 
     return (
         new_state,
