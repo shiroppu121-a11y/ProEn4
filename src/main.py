@@ -17,8 +17,8 @@ def create_enemies():
 
         Enemy(
             x=550,
-            y=380,
-            left_limit=400,
+            y=450,
+            left_limit=500,
             right_limit=650,
             enemy_type="slime"
         ),
@@ -51,13 +51,8 @@ def create_items():
 
         Item(
             x=1500,
-            y=430
-        ),
-
-        Item(
-            x=1600,
-            y=330
-        ),
+            y=270
+        )
     ]
 
 def reset_game(scene):
@@ -80,8 +75,17 @@ def reset_game(scene):
 
 pygame.init()
 
+# BGMを読み込んで再生
+pygame.mixer.music.load(
+    "assets/sounds/bgm.mp3"
+)
+
+pygame.mixer.music.set_volume(0.5)
+
+pygame.mixer.music.play(-1)
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("カメラ追従する2Dゲーム")
+pygame.display.set_caption("girl's adventure")
 
 clock = pygame.time.Clock()
 

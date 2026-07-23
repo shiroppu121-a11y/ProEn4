@@ -5,13 +5,10 @@ from map import Map
 from settings import (
     WIDTH,
     HEIGHT,
-    WORLD_WIDTH,
     BLACK,
-    GREEN,
     WHITE,
     RED,
     YELLOW,
-    GROUND_Y,
     GOAL_X,
     GOAL_Y,
     GOAL_WIDTH,
@@ -109,24 +106,26 @@ def draw_world(
     camera_x = state["camera_x"]
     camera_y = state["camera_y"]
 
-    screen.blit(
-        background_image,
-        (
-            -camera_x,
-            -camera_y
-        )
+     # 背景を横方向に繰り返し表示
+    background_width = background_image.get_width()
+
+    start_x = -(
+        camera_x
+        % background_width
     )
 
-    # 背景の縦線
-    for x in range(0, WORLD_WIDTH, 100):
-        screen_x = x - camera_x
+    for x in range(
+        start_x,
+        WIDTH,
+        background_width
+    ):
 
-        pygame.draw.line(
-            screen,
-            WHITE,
-            (screen_x, 0),
-            (screen_x, HEIGHT),
-            1
+        screen.blit(
+            background_image,
+            (
+                x,
+                -camera_y
+            )
         )
 
 
@@ -191,35 +190,7 @@ def draw_world(
             camera_y
         )
 
-
-def draw_background(
-    screen,
-    camera_x,
-    camera_y
-):
-
-    background_width = background_image.get_width()
-
-    start_x = -(
-        camera_x
-        % background_width
-    )
-
-    for x in range(
-        start_x,
-        WIDTH,
-        background_width
-    ):
-
-        screen.blit(
-            background_image,
-            (
-                x,
-                -camera_y
-            )
-        )
-
-
+    
 def draw_status(
     screen,
     state,

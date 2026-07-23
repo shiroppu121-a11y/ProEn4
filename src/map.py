@@ -17,16 +17,13 @@ class Map:
             )
 
 
-        # 追加したい足場
-        self.blocks.extend([
-            (400,400),
-            (450,400),
-            (500,400),
+        # 少し高い足場
+        for x in range(700, 900, self.block_size):
+            self.blocks.append((x, 450))
 
-            (700,350),
-            (750,350),
-            (800,350),
-        ])
+        # 段差
+        for x in range(1300, 1500, self.block_size):
+            self.blocks.append((x, 400))
 
 
         self.block_image = load_image(
