@@ -1,44 +1,36 @@
 import pygame
-
-from settings import GROUND_Y
+from assets import load_image
 
 
 class Map:
 
     def __init__(self):
 
+        self.block_size = 50
+        # 先に作る
         self.blocks = []
 
         # 地面
-        for x in range(0, 2400, 50):
-
+        for x in range(0,2400,50):
             self.blocks.append(
-                pygame.Rect(
-                    x,
-                    GROUND_Y,
-                    50,
-                    50
-                )
+                (x,500)
             )
 
 
-        # 足場
-        self.blocks.append(
-            pygame.Rect(
-                500,
-                400,
-                200,
-                50
-            )
-        )
+        # 追加したい足場
+        self.blocks.extend([
+            (400,400),
+            (450,400),
+            (500,400),
 
-        self.blocks.append(
-            pygame.Rect(
-                900,
-                350,
-                200,
-                50
-            )
+            (700,350),
+            (750,350),
+            (800,350),
+        ])
+
+
+        self.block_image = load_image(
+            "ground.png"
         )
 
 
@@ -49,15 +41,12 @@ class Map:
         camera_y
     ):
 
-        for block in self.blocks:
+        for x,y in self.blocks:
 
-            pygame.draw.rect(
-                screen,
-                (100,80,50),
+            screen.blit(
+                self.block_image,
                 (
-                    block.x-camera_x,
-                    block.y-camera_y,
-                    block.width,
-                    block.height
+                    x-camera_x,
+                    y-camera_y
                 )
             )

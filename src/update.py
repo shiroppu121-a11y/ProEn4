@@ -19,10 +19,14 @@ def update_game(
     dt,
     best_time
 ):
+
+    if player.invincible_time > 0:
+        player.invincible_time -= 1
+    
     state["elapsed_time"] += dt
 
     # プレイヤーを更新
-    player.update()
+    player.update(game_map)
 
     check_stage_collision(
         player,
@@ -36,9 +40,7 @@ def update_game(
     for enemy in enemies:
         enemy.update()
 
-    # アイテムを更新
-    for item in items:
-        item.update()
+    
 
     # 当たり判定
     best_time = check_collisions(
@@ -53,61 +55,61 @@ def update_game(
 
 
 def update_camera(state, player):
-    """プレイヤーの位置に応じてカメラを動かす。"""
+    """プレイヤーを中心にカメラ追従"""
 
-    left_limit = WIDTH * 0.15
-    right_limit = WIDTH * 0.85
-
-    # 画面上でのプレイヤー位置
-    player_screen_x = (
-        player.x - state["camera_x"]
+    target_x = (
+        player.x
+        + player.width // 2
+        - WIDTH // 2
     )
 
-    # プレイヤーが画面左側の限界を超えた場合
-    if player_screen_x < left_limit:
-        state["camera_x"] = (
-            player.x - left_limit
-        )
+    # 滑らかに追従
+    state["camera_x"] += (
+        target_x - state["camera_x"]
+    ) * 0.1
 
-    # プレイヤーが画面右側の限界を超えた場合
-    elif player_screen_x + player.width > right_limit:
-        state["camera_x"] = (
-            player.x
-            + player.width
-            - right_limit
-        )
 
-    # カメラをワールド内に制限
-    state["camera_x"] = max(
-        0,
-        min(
-            state["camera_x"],
-            WORLD_WIDTH - WIDTH
-        )
+    # 左端制限
+    if state["camera_x"] < 0:
+        state["camera_x"] = 0
+
+
+    # 右端制限
+    if state["camera_x"] > WORLD_WIDTH - WIDTH:
+        state["camera_x"] = WORLD_WIDTH - WIDTH
+
+
+    state["camera_x"] = int(
+        state["camera_x"]
     )
 
-    state["camera_x"] = int(state["camera_x"])
-
-def check_stage_collision(player, game_map):
+def check_stage_collision(
+    player,
+    game_map
+):
 
     player_rect = player.get_rect()
 
+    for x, y in game_map.blocks:
 
-    for block in game_map.blocks:
+        block_rect = pygame.Rect(
+            x,
+            y,
+            game_map.block_size,
+            game_map.block_size
+        )
 
-        if player_rect.colliderect(block):
+        if player_rect.colliderect(block_rect):
 
-            # 上から乗る
+            # 上から乗る処理
             if player.velocity_y > 0:
 
                 player.y = (
-                    block.y
-                    -
-                    player.height
+                    y - player.height
                 )
 
                 player.velocity_y = 0
-                player.on_ground=True
+                player.on_ground = True
 
 def check_collisions(
     state,
@@ -127,7 +129,12 @@ def check_collisions(
 
     # すべての敵との衝突を確認
     for enemy in enemies:
+
         if player_rect.colliderect(enemy.get_rect()):
+
+            if player.invincible_time > 0:
+                continue
+
             state["game_over"] = True
             print("ゲームオーバー")
 

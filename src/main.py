@@ -16,10 +16,10 @@ def create_enemies():
     return [
 
         Enemy(
-            x=600,
-            y=450,
-            left_limit=550,
-            right_limit=750,
+            x=550,
+            y=380,
+            left_limit=400,
+            right_limit=650,
             enemy_type="slime"
         ),
 
@@ -41,19 +41,24 @@ def create_enemies():
 
     ]
 def create_items():
-    """ステージに配置するアイテムを作成する。"""
+    """アイテム出現地点"""
 
     return [
         Item(
-            x=600,
-            y=450,
-            left_limit=550,
-            right_limit=750,
-            effect="speed",
-            amount=2
+            x=800,
+            y=430
+        ),
+
+        Item(
+            x=1500,
+            y=430
+        ),
+
+        Item(
+            x=2000,
+            y=430
         ),
     ]
-
 
 def reset_game(scene):
 
@@ -156,6 +161,21 @@ while running:
                         state, player, enemies, items, game_map = reset_game("title")
 
                         print("タイトル画面に戻る")
+
+                # Eキーでアイテム使用
+                if event.key == pygame.K_e:
+
+                    if player.item is not None:
+
+                        player.item.use(
+                            player,
+                            enemies
+                        )
+
+                        # 使用後消去
+                        player.item = None
+
+                        print("アイテム使用")
 
     # ゲーム更新
     if (

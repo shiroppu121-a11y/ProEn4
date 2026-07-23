@@ -241,6 +241,21 @@ def draw_status(
     screen.blit(speed_text, (20, 20))
     screen.blit(timer_text, (20, 55))
 
+    if player.holding_item:
+        item_text = small_font.render(
+            "ITEM : " + player.holding_item,
+            True,
+            YELLOW
+        )
+
+        screen.blit(
+            item_text,
+            (
+                WIDTH-250,
+                20
+            )
+        )
+
 
 def draw_overlay(screen, alpha=170):
     overlay = pygame.Surface((WIDTH, HEIGHT))
