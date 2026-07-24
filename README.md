@@ -6,8 +6,8 @@
 
 主なファイル構成は以下の通りである。
 
-```text
-ProEn4/
+
+ProEn4/src/
 │
 ├─ main.py
 ├─ player.py
@@ -21,13 +21,20 @@ ProEn4/
 ├─ settings.py
 ├─ records.py
 ├─ assets.py
+├─ .gitignore
+├─ clear_time.json
 │
 └─ assets/
     ├─ background.png
     ├─ player/
     │   └─ player.png
-    └─ ...
-```
+    ├─ sounds/
+    │   └─ bgm.mp3
+    ├─ bat.png
+    ├─ ground.png
+    ├─ rabbit.png
+    ├─ slime.png
+
 
 ### 各ファイルの役割
 
